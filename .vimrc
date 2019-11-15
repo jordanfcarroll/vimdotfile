@@ -14,6 +14,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
 "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 Plug 'christoomey/vim-tmux-navigator'
@@ -72,6 +73,9 @@ nnoremap H gT
 nnoremap L gt
 set relativenumber number
 
+" Treat words with hyphens as words 
+set iskeyword+=-
+
 set smarttab
 set cindent
 set tabstop=2
@@ -109,12 +113,11 @@ autocmd BufEnter * call SyncTree()
 
 nnoremap <Leader><Leader> <C-^>
 
-
 " coc config
 let g:coc_global_extensions = [
   \ 'coc-snippets',
-  \ 'coc-pairs',
   \ 'coc-tsserver',
+  \ 'coc-css',
   \ 'coc-eslint', 
   \ 'coc-prettier', 
   \ 'coc-json', 
@@ -235,3 +238,4 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
