@@ -1,20 +1,17 @@
 let mapleader = " "
-
-cd ~/nicosys/biomass-app/pwc
+cd ~/nicosys/yamato-cfwd-server
 " Specify a directory for plugins
 call plug#begin('~/.vim/plugged-3')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'scrooloose/nerdtree'
-"Plug 'tsony-tsonev/nerdtree-git-plugin'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
 Plug 'jiangmiao/auto-pairs'
+Plug 'phanviet/vim-monokai-pro'
 "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 Plug 'christoomey/vim-tmux-navigator'
@@ -26,40 +23,42 @@ Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
 " Initialize plugin system
 call plug#end()
 
+filetype plugin on
+
 inoremap jk <ESC>
-nmap <C-n> :NERDTreeToggle<CR>
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
 
-" open NERDTree automatically
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * NERDTree
+function! NERDCommenter_before()
+  if &ft == 'vue'
+    let g:ft = 'vue'
+    let stack = synstack(line('.'), col('.'))
+    if len(stack) > 0
+      let syn = synIDattr((stack)[0], 'name')
+      if len(syn) > 0
+        exe 'setf ' . substitute(tolower(syn), '^vue_', '', '')
+      endif
+    endif
+  endif
+endfunction
 
-let g:NERDTreeGitStatusWithFlags = 1
-"let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-"let g:NERDTreeGitStatusNodeColorization = 1
-"let g:NERDTreeColorMapCustom = {
-    "\ "Staged"    : "#0ee375",  
-    "\ "Modified"  : "#d9bf91",  
-    "\ "Renamed"   : "#51C9FC",  
-    "\ "Untracked" : "#FCE77C",  
-    "\ "Unmerged"  : "#FC51E6",  
-    "\ "Dirty"     : "#FFBD61",  
-    "\ "Clean"     : "#87939A",   
-    "\ "Ignored"   : "#808080"   
-    "\ }                         
+function! NERDCommenter_after()
+  if g:ft == 'vue'
+    setf vue
+    let g:ft = ''
+  endif
+endfunction
 
-
-let g:NERDTreeIgnore = ['^node_modules$']
-
+let g:ctrlp_custom_ignore = 'mockup'
+set wildignore+=*/mockup/*
 " vim-prettier
 "let g:prettier#quickfix_enabled = 0
 "let g:prettier#quickfix_auto_focus = 0
 " prettier command for coc
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " run prettier on save
-"let g:prettier#autoformat = 0
-"autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
 
 " ctrlp
@@ -73,47 +72,56 @@ nnoremap H gT
 nnoremap L gt
 set relativenumber number
 
-" Treat words with hyphens as words 
+" [buffer number] followed by filename:
+set statusline=[%n]\ %t
+" for Syntastic messages:
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+" show line#:column# on the right hand side
+set statusline+=%=%l:%c
+
+" Remap Window splitting commands
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Treat hyphens as part of words
 set iskeyword+=-
 
 set smarttab
 set cindent
-set tabstop=2
-set shiftwidth=2
+
+" Tab length
+set tabstop=4
+set shiftwidth=4
+" always uses spaces instead of tab characters
+set expandtab
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
-" always uses spaces instead of tab characters
-set expandtab
 set scrolloff=20
 
-colorscheme monokai
+" More natural splitting than default
+set splitbelow
+set splitright
+
+"remap for copy paste
+map <Leader>p ciw<C-r>0<ESC>
+map <Leader>P ciw<C-r>2<ESC>
+
+" Colorscheme & font
+set termguicolors
+colorscheme monokai_pro
 set bg=dark
 if has('gui_running')
  set guifont=CascadiaCode-Regular:h11
+ "set guifont=Anonymous\ Pro\ for\ Powerline:h13
 endif
-" sync open file with NERDTree
-" " Check if NERDTree is open or active
-function! IsNERDTreeOpen()        
-  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
-endfunction
-
-" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
-" file, and we're not in vimdiff
-function! SyncTree()
-  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
-    NERDTreeFind
-    wincmd p
-  endif
-endfunction
-
-" Highlight currently open buffer in NERDTree
-autocmd BufEnter * call SyncTree()
 
 nnoremap <Leader><Leader> <C-^>
-
-" coc config
 let g:coc_global_extensions = [
   \ 'coc-snippets',
   \ 'coc-tsserver',
@@ -236,6 +244,4 @@ nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
