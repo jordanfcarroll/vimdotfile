@@ -1,3 +1,7 @@
+" Plugin Manager - vim-plug
+"   https://github.com/junegunn/vim-plug
+
+
 if &diff
     " Colorscheme & font
     call plug#begin('~/.vim/plugged-3')
@@ -13,30 +17,45 @@ if &diff
     endif
     set background=dark
 else
+    " Working Directory -----------
+    cd ~/
+    """ -------------------------
+
     let mapleader = " "
+
     " Specify a directory for plugins
     call plug#begin('~/.vim/plugged-3')
 
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'airblade/vim-gitgutter'
-    Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-vinegar'
-    Plug 'tpope/vim-fugitive'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'phanviet/vim-monokai-pro'
-    Plug 'nathanaelkane/vim-indent-guides'
-    "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-    "
-    Plug 'christoomey/vim-tmux-navigator'
+        " Intellisense Engine
+        Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-    Plug 'morhetz/gruvbox'
+        " Git Gutter
+        Plug 'airblade/vim-gitgutter'
 
-    Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
+        " Fuzzy find
+        Plug 'ctrlpvim/ctrlp.vim'
+
+        " Surround motions
+        Plug 'tpope/vim-surround'
+        
+        " More Intuitive netwr
+        Plug 'tpope/vim-vinegar'
+
+        " Git Integration
+        Plug 'tpope/vim-fugitive'
+
+        Plug 'nathanaelkane/vim-indent-guides'
+
+        Plug 'christoomey/vim-tmux-navigator'
+
+        Plug 'morhetz/gruvbox'
+
+        Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
+
+        " Plug 'phanviet/vim-monokai-pro'
 
     " Initialize plugin system
     call plug#end()
-
     filetype plugin on
 
     " Max number of columns for syntax highlighting
