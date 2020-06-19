@@ -2,6 +2,7 @@
 "   https://github.com/junegunn/vim-plug
 
 
+" Options for Opening in diff mode
 if &diff
     " Colorscheme & font
     call plug#begin('~/.vim/plugged-3')
@@ -16,9 +17,10 @@ if &diff
     set guifont=CascadiaCode-Regular:h11
     endif
     set background=dark
+
 else
     " Working Directory -----------
-    cd ~/
+    cd ~/nicosys/yamato-cfwd-server
     """ -------------------------
 
     let mapleader = " "
@@ -44,22 +46,46 @@ else
         " Git Integration
         Plug 'tpope/vim-fugitive'
 
+        " Indent Guide Color Gradation
         Plug 'nathanaelkane/vim-indent-guides'
 
+        " Better navigation between split panes
         Plug 'christoomey/vim-tmux-navigator'
 
+        " TS syntax highlighing
+        " Plug 'HerringtonDarkholme/yats.vim'
+
+        " Theme
         Plug 'morhetz/gruvbox'
+        "Plug 'phanviet/vim-monokai-pro'
 
-        Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
-
-        " Plug 'phanviet/vim-monokai-pro'
 
     " Initialize plugin system
     call plug#end()
     filetype plugin on
 
-    " Max number of columns for syntax highlighting
-    set synmaxcol=200  
+    " TESTING 
+    filetype plugin indent on
+
+
+
+    " END TESTING
+
+    " Files with unsaved changes will be hidden instead of closed on file change, meaning no prompt to
+    " save each time
+    set hidden 
+
+    " Don't beep
+    set visualbell           
+    set noerrorbells    
+
+    " Save a lot so a swap file is more trouble 
+    set nobackup
+    set noswapfile
+
+    " Max number of columns for syntax highlighting (higher values slow vim
+    " down??)
+    set synmaxcol=1000  
 
     inoremap jk <ESC>
 
@@ -68,17 +94,9 @@ else
     let g:indent_guides_enable_on_vim_startup = 1
 
 
+    " custom ctrlp ignore
     let g:ctrlp_custom_ignore = 'mockup'
     set wildignore+=*/mockup/*
-    " vim-prettier
-    "let g:prettier#quickfix_enabled = 0
-    "let g:prettier#quickfix_auto_focus = 0
-    " prettier command for coc
-    command! -nargs=0 Prettier :CocCommand prettier.formatFile
-    " run prettier on save
-    let g:prettier#autoformat = 0
-    autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
-
 
     " ctrlp
     let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
@@ -89,22 +107,29 @@ else
     noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
     nnoremap H gT
     nnoremap L gt
-    set relativenumber number
 
-    " [buffer number] followed by filename:
-    " set statusline=[%n]\ %t
-    " for Syntastic messages:
-    " set statusline+=%#warningmsg#
-    " set statusline+=%{SyntasticStatuslineFlag()}
-    " set statusline+=%*
-    " show line#:column# on the right hand side
-    " set statusline+=%=%l:%c
 
+
+    " WINDOW SPLITS
+    
     " Remap Window splitting commands
     nnoremap <C-J> <C-W><C-J>
     nnoremap <C-K> <C-W><C-K>
     nnoremap <C-L> <C-W><C-L>
     nnoremap <C-H> <C-W><C-H>
+    " More natural splitting than default
+    set splitbelow
+    set splitright
+
+    " Filename, etc will display at bottom of split windows
+    " [buffer number] followed by filename:
+    set statusline=[%n]\ %t
+    " show line#:column# on the right hand side
+    set statusline+=%=%l:%c
+
+
+    " line number display
+    set relativenumber number
 
     " Treat hyphens as part of words
     set iskeyword+=-
@@ -117,12 +142,19 @@ else
     set shiftwidth=4
     " always uses spaces instead of tab characters
     set expandtab
+
+    " highlight search results
     set hlsearch
     set incsearch
+
     set ignorecase
     set smartcase
     set scrolloff=20
 
+
+    " FOLDING
+
+    " folding
     if has('folding')
       if has('windows')
         set fillchars=vert:┃              " BOX DRAWINGS HEAVY VERTICAL (U+2503, UTF-8: E2 92 83)
@@ -131,17 +163,11 @@ else
       set foldlevelstart=99               " start unfolded
     endif
 
+    " tab will open single fold
     nnoremap <tab> za
 
-    " More natural splitting than default
-    set splitbelow
-    set splitright
 
-    "remap for copy paste
-    map <Leader>p ciw<C-r>0<ESC>
-    map <Leader>P ciw<C-r>2<ESC>
-
-    " Colorscheme & font
+    " COLORSCHEME & FONT
 
     " Theme and Font
     colorscheme gruvbox
@@ -150,7 +176,11 @@ else
     endif
     set background=dark
 
+    " leader leader jumps to previous file
     nnoremap <Leader><Leader> <C-^>
+
+
+    " COC
     let g:coc_global_extensions = [
       \ 'coc-snippets',
       \ 'coc-tsserver',
@@ -160,9 +190,11 @@ else
       \ 'coc-prettier', 
       \ 'coc-json', 
       \ ]
-    " from readme
-    " if hidden is not set, TextEdit might fail.
-    set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default n000.
+
+    " from coc repo 
+    "
+    " Better display for messages 
+    set cmdheight=2 " You will have bad experience for diagnostic messages when it's default n000.
     set updatetime=300
 
     " don't give |ins-completion-menu| messages.
@@ -184,14 +216,14 @@ else
       return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
 
-    " Use <c-space> to trigger completion.
-    inoremap <silent><expr> <c-space> coc#refresh()
-
-    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-    " Coc only does snippet and additional edit on confirm.
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-    " Or use `complete_info` if your vim support it, like:
-    " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+    " position. Coc only does snippet and additional edit on confirm.
+    " <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+    if exists('*complete_info')
+      inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+    else
+      inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    endif
 
     " Use `[g` and `]g` to navigate diagnostics
     nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -219,10 +251,6 @@ else
 
     " Remap for rename current word
     nmap <F2> <Plug>(coc-rename)
-
-    " Remap for format selected region
-    xmap <leader>f  <Plug>(coc-format-selected)
-    nmap <leader>f  <Plug>(coc-format-selected)
 
     augroup mygroup
       autocmd!
