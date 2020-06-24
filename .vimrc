@@ -5,7 +5,7 @@
 " Options for Opening in diff mode
 if &diff
     " Colorscheme & font
-    call plug#begin('~/.vim/plugged-3')
+    call plug#begin('~/.vim/plugged')
 
     Plug 'morhetz/gruvbox'
     " Initialize plugin system
@@ -20,13 +20,13 @@ if &diff
 
 else
     " Working Directory -----------
-    cd ~/nicosys/yamato-cfwd-server
+    cd ~/nicosys/yamato-cfwd-server/resources/js
     """ -------------------------
 
     let mapleader = " "
 
     " Specify a directory for plugins
-    call plug#begin('~/.vim/plugged-3')
+    call plug#begin('~/.vim/plugged')
 
         " Intellisense Engine
         Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -39,6 +39,9 @@ else
 
         " Surround motions
         Plug 'tpope/vim-surround'
+
+        " Vue syntax highlighting
+        Plug 'posva/vim-vue'
         
         " More Intuitive netwr
         Plug 'tpope/vim-vinegar'
@@ -55,21 +58,30 @@ else
         " TS syntax highlighing
         " Plug 'HerringtonDarkholme/yats.vim'
 
-        " Theme
+        " Themes
         Plug 'morhetz/gruvbox'
-        "Plug 'phanviet/vim-monokai-pro'
+        Plug 'phanviet/vim-monokai-pro'
 
 
     " Initialize plugin system
     call plug#end()
     filetype plugin on
 
+
+
     " TESTING 
     filetype plugin indent on
+
+    " ctrl p speed
+    let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+    if executable('ag')
+      let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+    endif
 
 
 
     " END TESTING
+    
 
     " Files with unsaved changes will be hidden instead of closed on file change, meaning no prompt to
     " save each time
@@ -79,7 +91,7 @@ else
     set visualbell           
     set noerrorbells    
 
-    " Save a lot so a swap file is more trouble 
+    " Save a lot so a swap file is more trouble than worth
     set nobackup
     set noswapfile
 
@@ -87,20 +99,21 @@ else
     " down??)
     set synmaxcol=1000  
 
+    " Allow exiting insert mode with jk
     inoremap jk <ESC>
 
+    " Indenting
     let g:indent_guides_start_level = 2
     let g:indent_guides_guide_size = 1
     let g:indent_guides_enable_on_vim_startup = 1
 
-
-    " custom ctrlp ignore
-    let g:ctrlp_custom_ignore = 'mockup'
-    set wildignore+=*/mockup/*
-
     " ctrlp
     let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
     let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|mockup'
+
+    " vim-vue
+    " Manually specifying needed syntax preprocessers gets rid of the slowness
+    let g:vue_pre_processors = 'detect_on_enter'
 
     " j/k will move virtual lines (lines that wrap)
     noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
@@ -170,22 +183,23 @@ else
     " COLORSCHEME & FONT
 
     " Theme and Font
-    colorscheme gruvbox
+    colorscheme monokai_pro
     if has('gui_running')
-    set guifont=CascadiaCode-Regular:h11
+        set guifont=CascadiaCode-Regular:h11
     endif
     set background=dark
+
 
     " leader leader jumps to previous file
     nnoremap <Leader><Leader> <C-^>
 
 
-    " COC
+    " COC - Language servers and autocomplete
     let g:coc_global_extensions = [
       \ 'coc-snippets',
       \ 'coc-tsserver',
-      \ 'coc-vetur',
       \ 'coc-css',
+      \ 'coc-vetur',
       \ 'coc-eslint', 
       \ 'coc-prettier', 
       \ 'coc-json', 
