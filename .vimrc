@@ -20,7 +20,7 @@ if &diff
 
 else
     " Working Directory -----------
-    cd ~/nicosys/yamato-cfwd-server/resources/js
+    cd ~/Library/Application Support/pico-8/carts
     """ -------------------------
 
     let mapleader = " "
@@ -37,11 +37,23 @@ else
         " Fuzzy find
         Plug 'ctrlpvim/ctrlp.vim'
 
+        " neat status bar
+        Plug 'vim-airline/vim-airline'
+
         " Surround motions
         Plug 'tpope/vim-surround'
 
         " Vue syntax highlighting
         Plug 'posva/vim-vue'
+
+        " Vue syntax highlighting
+        Plug 'tbastos/vim-lua'
+
+        " Vue syntax highlighting
+        Plug 'justinj/vim-pico8-syntax'
+
+        " Vue pug syntax highlighting
+        Plug 'digitaltoad/vim-pug'
         
         " More Intuitive netwr
         Plug 'tpope/vim-vinegar'
@@ -52,6 +64,9 @@ else
         " Indent Guide Color Gradation
         Plug 'nathanaelkane/vim-indent-guides'
 
+        " Commenting (Works properly with embedded syntax)
+        Plug 'tomtom/tcomment_vim' 
+
         " Better navigation between split panes
         Plug 'christoomey/vim-tmux-navigator'
 
@@ -60,6 +75,7 @@ else
 
         " Themes
         Plug 'morhetz/gruvbox'
+        Plug 'franbach/miramare'
         Plug 'phanviet/vim-monokai-pro'
 
 
@@ -94,6 +110,10 @@ else
     " Save a lot so a swap file is more trouble than worth
     set nobackup
     set noswapfile
+
+    " Make sure vim writes after you edit a newly created file,
+    " instead of waiting for save
+     :autocmd BufNewFile * :write
 
     " Max number of columns for syntax highlighting (higher values slow vim
     " down??)
@@ -183,11 +203,12 @@ else
     " COLORSCHEME & FONT
 
     " Theme and Font
-    colorscheme monokai_pro
+    set background=dark
+    colorscheme gruvbox
     if has('gui_running')
         set guifont=CascadiaCode-Regular:h11
     endif
-    set background=dark
+    " set background=dark
 
 
     " leader leader jumps to previous file
