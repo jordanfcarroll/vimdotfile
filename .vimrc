@@ -20,7 +20,7 @@ if &diff
 
 else
     " Working Directory -----------
-    cd ~/Library/Application Support/pico-8/carts
+    cd 
     """ -------------------------
 
     let mapleader = " "
@@ -45,12 +45,6 @@ else
 
         " Vue syntax highlighting
         Plug 'posva/vim-vue'
-
-        " Vue syntax highlighting
-        Plug 'tbastos/vim-lua'
-
-        " Vue syntax highlighting
-        Plug 'justinj/vim-pico8-syntax'
 
         " Vue pug syntax highlighting
         Plug 'digitaltoad/vim-pug'
@@ -94,6 +88,11 @@ else
       let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
     endif
 
+
+    " Truncate airline sections based on window width
+    let g:airline#extensions#default#section_truncate_width = {
+      \ 'b': 200,
+      \ }
 
 
     " END TESTING
@@ -171,8 +170,8 @@ else
     set cindent
 
     " Tab length
-    set tabstop=4
-    set shiftwidth=4
+    set tabstop=2
+    set shiftwidth=2
     " always uses spaces instead of tab characters
     set expandtab
 
